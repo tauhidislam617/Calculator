@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button class="btn" onclick="clearDisplay()">C</button>
+      <button class="btn" onclick="deleteLast()">DEL</button>
+      <button class="btn" onclick="appendSymbol('%')">%</button>
+      <button class="btn operator" onclick="appendSymbol('/')">÷</button>
+
+      <button class="btn" onclick="appendNumber(7)">7</button>
+      <button class="btn" onclick="appendNumber(8)">8</button>
+      <button class="btn" onclick="appendNumber(9)">9</button>
+      <button class="btn operator" onclick="appendSymbol('*')">×</button>
+
+      <button class="btn" onclick="appendNumber(4)">4</button>
+      <button class="btn" onclick="appendNumber(5)">5</button>
+      <button class="btn" onclick="appendNumber(6)">6</button>
+      <button class="btn operator" onclick="appendSymbol('-')">−</button>
+
+      <button class="btn" onclick="appendNumber(1)">1</button>
+      <button class="btn" onclick="appendNumber(2)">2</button>
+      <button class="btn" onclick="appendNumber(3)">3</button>
+      <button class="btn operator" onclick="appendSymbol('+')">+</button>
+
+      <button class="btn" onclick="appendNumber(0)">0</button>
+      <button class="btn" onclick="appendSymbol('.')">.</button>
+      <button class="btn" onclick="calculateResult()">=</button>
+      <button class="btn" onclick="showPreviousResult()">
+        <i class="fas fa-history"></i> <!-- Icon for Previous button -->
+      </button>
+    </div>
+  </div>
+
+  <script>
+  let display = document.getElementById("display");
+    let previousResult = null;
+    let isNewCalculation = false; // Track if a new calculation is happening
+    
+    // Function to clear the display
+    function clearDisplay() {
+      display.innerText = "0";
+      isNewCalculation = false;
+    }
+    
+    // Function to delete the last character
+    function deleteLast() {
+      display.innerText = display.innerText.slice(0, -1) || "0";
+    }
+    
+    // Function to append numbers to the display
+    function appendNumber(number) {
+      if (display.innerText === "0" || isNewCalculation) {
+        display.innerText = number;
+        isNewCalculation = false; // Reset the flag after appending a number
+      } else {
+        display.innerText += number;
+      }
+    }
+    
+    // Function to append symbols/operators
+    function appendSymbol(symbol) {
+      display.innerText += symbol;
+    }
+    
+    // Function to calculate and display the result
+    function calculateResult() {
+      try {
+        previousResult = display.innerText; // Save current display before evaluating
+        display.innerText = eval(display.innerText);
+        isNewCalculation = true; // Set flag for new calculation
+      } catch {
+        display.innerText = "Error";
+        isNewCalculation = true; // Set flag for new calculation after error
+      }
+    }
+    
+    // Function to show the previous result
+    function showPreviousResult() {
+      if (previousResult !== null) {
+        display.innerText = previousResult;
+        isNewCalculation = true; // Set flag for new calculation
+      }
+    }
+    
+    // Event listener for keyboard inputs
+    document.addEventListener("keydown", (event) => {
+      const key = event.key;
+    
+      // Check if the key is a number or a decimal
+      if (!isNaN(key) || key === ".") {
+        appendNumber(key);
+      }
+      // Check for operators
+      else if (key === "+" || key === "-" || key === "*" || key === "/") {
+        appendSymbol(key);
+      }
+      // Check for Enter key (calculate result)
+      else if (key === "Enter") {
+        calculateResult();
+      }
+      // Check for Backspace key (delete last character)
+      else if (key === "Backspace") {
+        deleteLast();
+      }
+      // Check for Escape key (clear display)
+      else if (key === "Escape") {
+        clearDisplay();
+      }
+    });
+    
+  </script>
+</body>
+</html>
